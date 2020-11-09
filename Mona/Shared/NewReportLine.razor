@@ -1,4 +1,8 @@
-﻿@using Mona.Data
+﻿@using System.IO
+@using System.ComponentModel.DataAnnotations
+@using Mona.Data
+
+@inject ReportService ReportService
 
 <EditForm Model="@_newReportLine" OnValidSubmit="@HandleValidSubmit">
     <fieldset>
@@ -16,22 +20,75 @@
         <label for="description">Omschrijving</label>
         <InputTextArea id="description" @bind-Value="_newReportLine.Description" />
         
+        <InputFile OnChange="@InputFileChanged"></InputFile>
+
         <button type="submit">Submit</button>
     </fieldset>
 </EditForm>
 
 @code {
+
+    public class NewReportLineDto
+    {
+        [Required]
+        public string Location { get; set; }
+        [Required]
+        public string Responsible { get; set; }
+        [Required]
+        public DateTimeOffset TargetDate { get; set; }
+        [Required]
+        public string Description { get; set; }
+        [Required]
+        [FileValidationAttribute(new []{".png", ".jpg"})]
+        public IBrowserFile BrowserFile { get; set; }
+        public byte[] FileData { get; set; }
+    }
+
+    private class FileValidationAttribute : ValidationAttribute
+    {
+        public FileValidationAttribute(string[] allowedExtensions)
+        {
+            AllowedExtensions = allowedExtensions;
+        }
+
+        private string[] AllowedExtensions { get; }
+
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            var file = (IBrowserFile)value;
+
+            var extension = Path.GetExtension(file.Name);
+
+            return !AllowedExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase) ? new ValidationResult($"File must have one of the following extensions: {string.Join(", ", AllowedExtensions)}.", new[] { validationContext.MemberName }) : ValidationResult.Success;
+        }
+    }
+
     [Parameter]
     public long ReportId { get; set; }
 
-    private ReportLine _newReportLine = new ReportLine()
+    private NewReportLineDto _newReportLine = new NewReportLineDto()
     {
-        TargetDate = DateTimeOffset.UtcNow.AddDays(2)
+        TargetDate = DateTimeOffset.UtcNow.AddDays(1)
     };
 
-    private void HandleValidSubmit()
+    public async Task HandleValidSubmit()
     {
-        
+        var toPersist = new ReportLine
+        {
+            TargetDate = _newReportLine.TargetDate,
+            Description = _newReportLine.Description,
+            Location = _newReportLine.Location,
+            ReportId = ReportId,
+            Responsible = _newReportLine.Responsible
+        };
+        await ReportService.Persist(toPersist, _newReportLine.BrowserFile);
+        _newReportLine = new NewReportLineDto() { TargetDate = DateTimeOffset.UtcNow.AddDays(1) };
+
+    }
+
+    private async Task InputFileChanged(InputFileChangeEventArgs e)
+    {
+        _newReportLine.BrowserFile = e.File;
     }
 }
 

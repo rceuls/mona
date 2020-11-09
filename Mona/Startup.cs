@@ -28,6 +28,7 @@ namespace Mona
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddSingleton<AwsS3Uploader>();
             services.AddTransient<ReportService>();
         }
 

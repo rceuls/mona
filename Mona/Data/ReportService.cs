@@ -1,49 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace Mona.Data
 {
-    public class Report
-    {
-        public long Id { get; set; }
-        [Required]
-        [MinLength(5)]
-        [MaxLength(255)]
-        public string ReportedBy { get; set; }
-        [Required]
-        public DateTimeOffset CreatedOn { get; set; }
-        public IEnumerable<ReportLine> ReportLines { get; set; }
-    }
-
-    public class ReportLine
-    {
-        public long Id { get; set; }
-        public long ReportId { get; set; }
-
-        [Required]
-        [MinLength(2)]
-        [MaxLength(4096)]
-        public string Description { get; set; }
-        
-        [Required]
-        [MinLength(2)]
-        [MaxLength(1024)]
-        public string Location { get; set; }
-        
-        [Required]
-        [MinLength(2)]
-        [MaxLength(1024)]public string Responsible { get; set; }
-
-        [Required]
-        public DateTimeOffset TargetDate { get; set; }
-
-
-    }
-
     public class ReportService
     {
+        private readonly AwsS3Uploader _uploader;
+
+        public ReportService(AwsS3Uploader uploader)
+        {
+            _uploader = uploader;
+        }
+
         public Task<IEnumerable<Report>> GetAllReportsAsync()
         {
             return Task.FromResult(new List<Report>
@@ -80,6 +50,13 @@ namespace Mona.Data
                 },
 
             } as IEnumerable<ReportLine>);
+        }
+
+        public async Task Persist(ReportLine toPersist, IBrowserFile fileData)
+        {
+            var resizedFile = await fileData.RequestImageFileAsync("png", 800, 600);
+            var fileName = $"{toPersist.ReportId.ToString().PadLeft(3, '0')}/{Guid.NewGuid()}.png";
+            toPersist.ImageUrl = await _uploader.UploadFileAsync(resizedFile.OpenReadStream(2_000_000), fileName);
         }
     }
 }

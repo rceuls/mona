@@ -1,11 +1,15 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Mona.Data
+namespace Mona.Data.Model
 {
     public class ReportLine
     {
+        [Key]
         public long Id { get; set; }
+
+        public Report Report { get; set; }
+
         public long ReportId { get; set; }
 
         [Required]

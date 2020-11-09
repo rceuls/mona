@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Mona.Data
+namespace Mona.Data.Model
 {
     public class Report
     {
+        [Key]
         public long Id { get; set; }
         [Required]
         [MinLength(5)]

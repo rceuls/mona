@@ -1,0 +1,37 @@
+﻿@using Mona.Data
+
+<EditForm Model="@_newReportLine" OnValidSubmit="@HandleValidSubmit">
+    <fieldset>
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <label for="location">Locatie</label>
+        <InputText id="location" @bind-Value="_newReportLine.Location" />
+
+        <label for="responsible">Verantwoordelijke</label>
+        <InputText id="responsible" @bind-Value="_newReportLine.Responsible" />
+
+        <label for="targetDate">Doeldatum</label>
+        <InputDate id="targetDate" @bind-Value="_newReportLine.TargetDate" />
+
+        <label for="description">Omschrijving</label>
+        <InputTextArea id="description" @bind-Value="_newReportLine.Description" />
+
+        <button type="submit">Submit</button>
+    </fieldset>
+</EditForm>
+
+@code {
+    [Parameter]
+    public long ReportId { get; set; }
+
+    private ReportLine _newReportLine = new ReportLine()
+    {
+        TargetDate = DateTimeOffset.UtcNow.AddDays(2)
+    };
+
+    private void HandleValidSubmit()
+    {
+        
+    }
+}
+

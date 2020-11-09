@@ -1,0 +1,47 @@
+﻿@page "/reports"
+
+@using Mona.Data
+@inject ReportService ReportService
+
+@if (_reports == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Aangemaakt op</th>
+                <th>Aangemaakt door</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var report in _reports)
+            {
+                <tr class="big-icon">
+                    <td>@report.CreatedOn.Date.ToShortDateString()</td>
+                    <td>@report.ReportedBy</td>
+                    <td>
+                        <a href="#">
+                            <span class="iconify" data-icon="fa-regular:file-pdf" data-inline="false"></span>
+                        </a>
+                        <a href="#">
+                            <span class="iconify" data-icon="fa-regular:edit" data-inline="false"></span>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<Report> _reports;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _reports = await ReportService.GetAllReportsAsync();
+    }
+}

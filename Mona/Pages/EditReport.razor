@@ -1,0 +1,63 @@
+﻿@page "/reports/{reportId:long}"
+
+@using Mona.Data
+@inject ReportService ReportService
+
+<div class=@EditFormClass>
+    <NewReportLine ReportId=@ReportId />
+</div>
+<button class="button button-outline" @onclick="ShowOrHideForm">@HideShowButtonText</button>
+
+
+@if (_reportLines == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Omschrijving</th>
+                <th>Locatie</th>
+                <th>Datum</th>
+                <th>Verantwoordelijke</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reportLine in _reportLines)
+            {
+                <tr class="big-icon">
+                    <td>@reportLine.Description</td>
+                    <td>@reportLine.Location</td>
+                    <td>@reportLine.TargetDate.Date.ToShortDateString()</td>
+                    <td>@reportLine.Responsible</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    [Parameter]
+    public long ReportId { get; set; }
+
+    public string EditFormClass { get; set; } = string.Empty;
+    public string HideShowButtonText { get; set; } = "Verbergen";
+
+    private IEnumerable<ReportLine> _reportLines;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _reportLines = await ReportService.GetReportLinesByReportIdAsync(ReportId);
+    }
+
+    private void ShowOrHideForm()
+    {
+        EditFormClass = EditFormClass == "collapsed" ? string.Empty : "collapsed";
+        HideShowButtonText = HideShowButtonText == "Verbergen" ? "Tonen" : "Verbergen";
+    }
+
+}
+

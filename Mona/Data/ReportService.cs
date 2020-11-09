@@ -37,5 +37,17 @@ namespace Mona.Data
             await _reportDataContext.ReportLines.AddAsync(toPersist);
             await _reportDataContext.SaveChangesAsync();
         }
+
+        public async Task<long> CreateNewReport()
+        {
+            var report = new Report
+            {
+                CreatedOn = DateTimeOffset.UtcNow,
+                ReportedBy = "placeholder"
+            };
+            await _reportDataContext.AddAsync(report);
+            await _reportDataContext.SaveChangesAsync();
+            return report.Id;
+        }
     }
 }

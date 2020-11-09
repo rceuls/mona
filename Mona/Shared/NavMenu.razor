@@ -1,14 +1,25 @@
-﻿<div class="navbar">
-    <ul>
-        <li>
-            <NavLink href="">
-                KRT
-            </NavLink>
-        </li>
-        <li>
-            <NavLink href="reports">
-                Reports
-            </NavLink>
-        </li>
-    </ul>
+﻿@using Mona.Data
+@inject ReportService ReportService
+@inject NavigationManager NavigationManager;
+
+<div class="navigation">
+    <section class="container">
+        <NavLink class="navigation-title" href="reports">
+            <h1 class="title">KRT</h1>
+        </NavLink>
+        <ul class="navigation-list float-right">
+            <li class="navigation-item">
+                <button class="button button-outline" @onclick="NewReport">New Report</button>
+            </li>
+        </ul>
+    </section>
 </div>
+
+@code
+{
+    public async Task NewReport()
+    {
+        var reportId = await ReportService.CreateNewReport();
+        NavigationManager.NavigateTo($"/reports/{reportId}");
+    }
+}

@@ -28,7 +28,6 @@
 </EditForm>
 
 @code {
-
     public class NewReportLineDto
     {
         [Required]
@@ -67,9 +66,12 @@
     [Parameter]
     public long ReportId { get; set; }
 
+    [Parameter]
+    public EventCallback<EventArgs> ItemAddedCallback { get; set; }
+
     private NewReportLineDto _newReportLine = new NewReportLineDto()
     {
-        TargetDate = DateTimeOffset.UtcNow.AddDays(1)
+        TargetDate = DateTimeOffset.UtcNow.AddDays(7)
     };
 
     public async Task HandleValidSubmit()
@@ -83,7 +85,8 @@
             Responsible = _newReportLine.Responsible
         };
         await ReportService.Persist(toPersist, _newReportLine.BrowserFile);
-        _newReportLine = new NewReportLineDto() { TargetDate = DateTimeOffset.UtcNow.AddDays(1) };
+        _newReportLine = new NewReportLineDto() { TargetDate = DateTimeOffset.UtcNow.AddDays(7) };
+        await ItemAddedCallback.InvokeAsync(EventArgs.Empty);
 
     }
 

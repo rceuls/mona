@@ -5,7 +5,7 @@
 @inject ReportService ReportService
 
 <div class=@EditFormClass>
-    <NewReportLine ReportId=@ReportId />
+    <NewReportLine ReportId=@ReportId ItemAddedCallback=@ItemHasBeenAdded />
 </div>
 <button class="button button-outline" @onclick="ShowOrHideForm">@HideShowButtonText</button>
 
@@ -60,5 +60,9 @@ else
         HideShowButtonText = HideShowButtonText == "Verbergen" ? "Tonen" : "Verbergen";
     }
 
+    private async Task ItemHasBeenAdded()
+    {
+        _reportLines = await ReportService.GetReportLinesByReportIdAsync(ReportId);
+    }
 }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
 using Mona.Data.Model;
@@ -38,12 +39,13 @@ namespace Mona.Data
             await _reportDataContext.SaveChangesAsync();
         }
 
-        public async Task<long> CreateNewReport()
+        [Authorize]
+        public async Task<long> CreateNewReport(string reportedBy)
         {
             var report = new Report
             {
                 CreatedOn = DateTimeOffset.UtcNow,
-                ReportedBy = "placeholder"
+                ReportedBy = reportedBy
             };
             await _reportDataContext.AddAsync(report);
             await _reportDataContext.SaveChangesAsync();

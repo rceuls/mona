@@ -1,6 +1,7 @@
 ﻿@using Mona.Data
 @inject ReportService ReportService
 @inject NavigationManager NavigationManager;
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <BSNavbar IsDark="false" Color="Color.Light">
     <BSNavbarBrand>
@@ -45,7 +46,11 @@
 {
     public async Task OnNewReport()
     {
-        var reportId = await ReportService.CreateNewReport();
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        var email = user?.Claims.FirstOrDefault(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
+        var reportId = await ReportService.CreateNewReport(email);
         NavigationManager.NavigateTo($"/reports/{reportId}");
     }
 }

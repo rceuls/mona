@@ -5,6 +5,7 @@
 
 @inject ReportService ReportService
 
+@attribute [Authorize]
 
 
 @if (_reportLines == null)
@@ -13,7 +14,7 @@
 }
 else
 {
-    <NewReportLine @ref=@_editModal ReportId="ReportId"/>
+    <NewReportLine @ref=@_editModal ReportId="ReportId" />
 
     <BSTable IsBordered="true" IsStriped="true" IsSmall="true">
         <thead>

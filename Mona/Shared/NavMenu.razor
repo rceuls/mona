@@ -8,10 +8,34 @@
             KRT
         </BSNavLink>
     </BSNavbarBrand>
-    <BSNav  Class="my-2 my-lg-0">
+    <BSNav Class="my-2 my-lg-0">
+        <BSNavItem>
+            <AuthorizeView>
+                <Authorized>
+                    <BSNavLink>
+                        <BSButton Color="Color.Primary" IsOutline="true" @onclick="OnNewReport">New Report</BSButton>
+                    </BSNavLink>
+                </Authorized>
+            </AuthorizeView>
+        </BSNavItem>
         <BSNavItem>
             <BSNavLink>
-                <BSButton Color="Color.Primary" IsOutline="true" @onclick="OnNewReport">New Report</BSButton>
+                <AuthorizeView>
+                    <Authorized>
+                        <NavLink href="logout">
+                            <BSButton Color="Color.Danger">
+                                Logout
+                            </BSButton>
+                        </NavLink>
+                    </Authorized>
+                    <NotAuthorized>
+                        <NavLink href="login?redirectUri=/">
+                            <BSButton Color="Color.Primary">
+                                Log in
+                            </BSButton>
+                        </NavLink>
+                    </NotAuthorized>
+                </AuthorizeView>
             </BSNavLink>
         </BSNavItem>
     </BSNav>

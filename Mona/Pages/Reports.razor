@@ -3,6 +3,7 @@
 @using Mona.Data
 @using Mona.Data.Model
 @inject ReportService ReportService
+@inject NavigationManager NavigationManager
 
 @if (_reports == null)
 {
@@ -10,7 +11,7 @@
 }
 else
 {
-    <table>
+    <BSTable IsBordered="true" IsStriped="true" IsResponsive="true" IsSmall="true">
         <thead>
             <tr>
                 <th>Aangemaakt op</th>
@@ -21,21 +22,23 @@ else
         <tbody>
             @foreach (var report in _reports)
             {
-                <tr class="big-icon">
+                <tr>
                     <td>@report.CreatedOn.Date.ToShortDateString()</td>
                     <td>@report.ReportedBy</td>
                     <td>
-                        <a href="#">
-                            <span class="iconify" data-icon="fa-regular:file-pdf" data-inline="false"></span>
-                        </a>
-                        <a href="#">
-                            <span class="iconify" data-icon="fa-regular:edit" data-inline="false"></span>
-                        </a>
+                        <BSButtonGroup>
+                        <BSButton Color="Color.Link" OnClick="@(() => NavigationManager.NavigateTo($"/reports/{report.Id}/export/pdf"))">
+                                <span class="iconify" data-icon="fa-regular:file-pdf" data-inline="false"></span>
+                            </BSButton>
+                            <BSButton Color="Color.Link" OnClick="@(() => NavigationManager.NavigateTo($"/reports/{report.Id}"))">
+                                <span class="iconify" data-icon="fa-regular:edit" data-inline="false"></span>
+                            </BSButton>
+                        </BSButtonGroup>
                     </td>
                 </tr>
             }
         </tbody>
-    </table>
+    </BSTable>
 }
 
 @code {

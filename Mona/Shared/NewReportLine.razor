@@ -5,27 +5,47 @@
 
 @inject ReportService ReportService
 
-<EditForm Model="@_newReportLine" OnValidSubmit="@HandleValidSubmit">
-    <fieldset>
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-        <label for="location">Locatie</label>
-        <InputText id="location" @bind-Value="_newReportLine.Location" />
 
-        <label for="responsible">Verantwoordelijke</label>
-        <InputText id="responsible" @bind-Value="_newReportLine.Responsible" />
+<BSModal @ref=_newLineModal IsCentered="true" Size="Size.ExtraLarge">
+    <BSModalHeader OnClick="@OnToggleModal">Modal title</BSModalHeader>
+    <BSModalBody>
+        <EditForm Model="@_newReportLine" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group">
+                <label for="location">Locatie</label>
+                <InputText id="location" @bind-Value="_newReportLine.Location" class="form-control form-control-sm" />
+            </div>
 
-        <label for="targetDate">Doeldatum</label>
-        <InputDate id="targetDate" @bind-Value="_newReportLine.TargetDate" />
+            <div class="form-group">
+                <label for="responsible">Verantwoordelijke</label>
+                <InputText id="responsible" @bind-Value="_newReportLine.Responsible" class="form-control form-control-sm" />
+            </div>
 
-        <label for="description">Omschrijving</label>
-        <InputTextArea id="description" @bind-Value="_newReportLine.Description" />
-        
-        <InputFile OnChange="@InputFileChanged"></InputFile>
+            <div class="form-group">
+                <label for="targetDate">Doeldatum</label>
+                <InputDate id="targetDate" @bind-Value="_newReportLine.TargetDate" class="form-control form-control-sm" />
+            </div>
 
-        <button type="submit">Submit</button>
-    </fieldset>
-</EditForm>
+            <div class="form-group">
+                <label for="description">Omschrijving</label>
+                <InputTextArea id="description" @bind-Value="_newReportLine.Description" class="form-control form-control-sm" />
+            </div>
+    
+            <div class="form-group">
+                <InputFile OnChange="@InputFileChanged" class="form-control-file"></InputFile>
+            </div>
+        </EditForm>
+    </BSModalBody>
+    <BSModalFooter>
+        <BSButton Color="Color.Primary" @onclick="@HandleValidSubmit">Save</BSButton>
+        <BSButton Color="Color.Secondary" @onclick="@OnToggleModal">Close</BSButton>
+    </BSModalFooter>
+</BSModal>
+
+<BSButton OnClick=@OnToggleModal>Nieuwe Lijn</BSButton>
+
+
 
 @code {
     public class NewReportLineDto
@@ -43,6 +63,7 @@
         public IBrowserFile BrowserFile { get; set; }
         public byte[] FileData { get; set; }
     }
+
 
     private class FileValidationAttribute : ValidationAttribute
     {
@@ -62,6 +83,8 @@
             return !AllowedExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase) ? new ValidationResult($"File must have one of the following extensions: {string.Join(", ", AllowedExtensions)}.", new[] { validationContext.MemberName }) : ValidationResult.Success;
         }
     }
+
+    private BSModal _newLineModal;
 
     [Parameter]
     public long ReportId { get; set; }
@@ -90,9 +113,15 @@
 
     }
 
-    private async Task InputFileChanged(InputFileChangeEventArgs e)
+    private void InputFileChanged(InputFileChangeEventArgs e)
     {
         _newReportLine.BrowserFile = e.File;
     }
+
+    private void OnToggleModal()
+    {
+        _newLineModal.Toggle();
+    }
+
 }
 

@@ -1,0 +1,46 @@
+﻿@page "/reports/{reportId:long}/export/pdf"
+
+@using Mona.Data
+@using Mona.Data.Model
+
+@inject ReportService ReportService
+
+@attribute [Authorize]
+
+
+@if (_reportLines == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <BSCard CardType="CardType.Columns">
+
+        @foreach (var reportLine in _reportLines)
+        {
+            <BSCard CardType="CardType.Card">
+                <BSCard CardType="CardType.Image" VerticalAlignment="VerticalAlignment.Top" src=@reportLine.ImageUrl alt=@reportLine.Description/>
+                <BSCard CardType="CardType.Body">
+                    <BSCard CardType="CardType.Title">@reportLine.Location</BSCard>
+                    <BSCard CardType="CardType.Subtitle">@reportLine.Responsible tegen @reportLine.TargetDate.Date.ToShortDateString()</BSCard>
+                    <BSCard CardType="CardType.Text">@reportLine.Description</BSCard>
+                </BSCard>
+            </BSCard>
+        }
+    </BSCard>
+}
+
+@code {
+
+    [Parameter]
+    public long ReportId { get; set; }
+
+    private IEnumerable<ReportLine> _reportLines;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _reportLines = await ReportService.GetReportLinesByReportIdAsync(ReportId);
+    }
+
+}
+

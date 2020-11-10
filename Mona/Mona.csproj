@@ -15,6 +15,7 @@
   <ItemGroup>
     <Watch Remove="Components\NewReportLine.razor" />
     <Watch Remove="Pages\EditReport.razor" />
+    <Watch Remove="Pages\ReportPrintView.razor" />
     <Watch Remove="Pages\Reports.razor" />
   </ItemGroup>
 

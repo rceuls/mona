@@ -5,41 +5,46 @@
 @inject ReportService ReportService
 @inject NavigationManager NavigationManager
 
-@if (_reports == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <BSTable IsBordered="true" IsStriped="true" IsResponsive="true" IsSmall="true">
-        <thead>
-            <tr>
-                <th>Aangemaakt op</th>
-                <th>Aangemaakt door</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var report in _reports)
-            {
-                <tr>
-                    <td>@report.CreatedOn.Date.ToShortDateString()</td>
-                    <td>@report.ReportedBy</td>
-                    <td>
-                        <BSButtonGroup>
-                        <BSButton Color="Color.Link" OnClick="@(() => NavigationManager.NavigateTo($"/reports/{report.Id}/export/pdf"))">
-                                <span class="iconify" data-icon="fa-regular:file-pdf" data-inline="false"></span>
-                            </BSButton>
-                            <BSButton Color="Color.Link" OnClick="@(() => NavigationManager.NavigateTo($"/reports/{report.Id}"))">
-                                <span class="iconify" data-icon="fa-regular:edit" data-inline="false"></span>
-                            </BSButton>
-                        </BSButtonGroup>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </BSTable>
-}
+<BSRow>
+    <BSCol Class="pt-2">
+
+        @if (_reports == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <BSTable IsBordered="true" IsStriped="true" IsResponsive="true" IsSmall="true">
+                <thead>
+                    <tr>
+                        <th>Aangemaakt op</th>
+                        <th>Aangemaakt door</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var report in _reports)
+                    {
+                        <tr>
+                            <td>@report.CreatedOn.Date.ToShortDateString()</td>
+                            <td>@report.ReportedBy</td>
+                            <td>
+                                <BSButtonGroup>
+                                    <BSButton Color="Color.Link" OnClick="@(() => NavigationManager.NavigateTo($"/reports/{report.Id}/export/pdf"))">
+                                        <span class="iconify" data-icon="fa-regular:file-pdf" data-inline="false"></span>
+                                    </BSButton>
+                                    <BSButton Color="Color.Link" OnClick="@(() => NavigationManager.NavigateTo($"/reports/{report.Id}"))">
+                                        <span class="iconify" data-icon="fa-regular:edit" data-inline="false"></span>
+                                    </BSButton>
+                                </BSButtonGroup>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </BSTable>
+        }
+    </BSCol>
+</BSRow>
 
 @code {
     private IEnumerable<Report> _reports;

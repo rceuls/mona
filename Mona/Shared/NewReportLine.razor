@@ -5,9 +5,8 @@
 
 @inject ReportService ReportService
 
-
 <BSModal @ref=_newLineModal IsCentered="true" Size="Size.ExtraLarge">
-    <BSModalHeader OnClick="@OnToggleModal">Modal title</BSModalHeader>
+    <BSModalHeader OnClick="@OnToggleModalForEdit">Add Reportline</BSModalHeader>
     <BSModalBody>
         <EditForm Model="@_newReportLine" OnValidSubmit="@HandleValidSubmit">
             <DataAnnotationsValidator />
@@ -39,11 +38,15 @@
     </BSModalBody>
     <BSModalFooter>
         <BSButton Color="Color.Primary" @onclick="@HandleValidSubmit">Save</BSButton>
-        <BSButton Color="Color.Secondary" @onclick="@OnToggleModal">Close</BSButton>
+        <BSButton Color="Color.Secondary" @onclick="@OnToggleModalForEdit">Close</BSButton>
     </BSModalFooter>
 </BSModal>
 
-<BSButton OnClick=@OnToggleModal>Nieuwe Lijn</BSButton>
+<BSRow Class="pt-2 pb-2">
+    <BSCol>
+        <BSButton OnClick=@OnToggleModalForEdit>Nieuwe Lijn</BSButton>
+    </BSCol>
+</BSRow>
 
 
 
@@ -89,9 +92,6 @@
     [Parameter]
     public long ReportId { get; set; }
 
-    [Parameter]
-    public EventCallback<EventArgs> ItemAddedCallback { get; set; }
-
     private NewReportLineDto _newReportLine = new NewReportLineDto()
     {
         TargetDate = DateTimeOffset.UtcNow.AddDays(7)
@@ -109,7 +109,6 @@
         };
         await ReportService.Persist(toPersist, _newReportLine.BrowserFile);
         _newReportLine = new NewReportLineDto() { TargetDate = DateTimeOffset.UtcNow.AddDays(7) };
-        await ItemAddedCallback.InvokeAsync(EventArgs.Empty);
 
     }
 
@@ -118,7 +117,7 @@
         _newReportLine.BrowserFile = e.File;
     }
 
-    private void OnToggleModal()
+    private void OnToggleModalForEdit()
     {
         _newLineModal.Toggle();
     }

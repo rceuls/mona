@@ -71,16 +71,6 @@ else
         _reportLines = await ReportService.GetReportLinesByReportIdAsync(ReportId);
     }
 
-    private void ShowOrHideForm()
-    {
-        _showNewReportLine = !_showNewReportLine;
-    }
-
-    private async Task ItemHasBeenAdded()
-    {
-        _reportLines = await ReportService.GetReportLinesByReportIdAsync(ReportId);
-    }
-
     private void OnToggleImageModalAndChangeImage(ReportLine reportLine)
     {
         _selectedImage = reportLine.ImageUrl;

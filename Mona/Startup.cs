@@ -41,65 +41,67 @@ namespace Mona
             });
 
             services.AddAuthentication(options =>
-  {
-    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-  })
-  .AddCookie()
-  .AddOpenIdConnect("Auth0", options =>
-  {
-    // Set the authority to your Auth0 domain
-    options.Authority = $"https://{Configuration["AUTH_DOMAIN"]}";
+                {
+                    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                })
+                .AddCookie()
+                .AddOpenIdConnect("Auth0", options =>
+                {
+                    // Set the authority to your Auth0 domain
+                    options.Authority = $"https://{Configuration["AUTH_DOMAIN"]}";
 
-    // Configure the Auth0 Client ID and Client Secret
-    options.ClientId = Configuration["AUTH_CLIENT_KEY"];
-    options.ClientSecret = Configuration["AUTH_CLIENT_SECRET"];
+                    // Configure the Auth0 Client ID and Client Secret
+                    options.ClientId = Configuration["AUTH_CLIENT_KEY"];
+                    options.ClientSecret = Configuration["AUTH_CLIENT_SECRET"];
 
-    // Set response type to code
-    options.ResponseType = "code";
+                    // Set response type to code
+                    options.ResponseType = "code";
 
-    // Configure the scope
-    options.Scope.Clear();
-    options.Scope.Add("openid");
-    options.Scope.Add("email");
+                    // Configure the scope
+                    options.Scope.Clear();
+                    options.Scope.Add("openid");
+                    options.Scope.Add("email");
 
-    // Set the callback path, so Auth0 will call back to http://localhost:3000/callback
-    // Also ensure that you have added the URL as an Allowed Callback URL in your Auth0 dashboard
-    options.CallbackPath = new PathString("/callback");
+                    // Set the callback path, so Auth0 will call back to http://localhost:3000/callback
+                    // Also ensure that you have added the URL as an Allowed Callback URL in your Auth0 dashboard
+                    options.CallbackPath = new PathString("/callback");
 
-    // Configure the Claims Issuer to be Auth0
-    options.ClaimsIssuer = "Auth0";
+                    // Configure the Claims Issuer to be Auth0
+                    options.ClaimsIssuer = "Auth0";
 
-    options.Events = new OpenIdConnectEvents
-    {
-      // handle the logout redirection
-      OnRedirectToIdentityProviderForSignOut = (context) =>
-        {
-          var logoutUri = $"https://{Configuration["AUTH_DOMAIN"]}/v2/logout?client_id={Configuration["AUTH_CLIENT_KEY"]}";
+                    options.Events = new OpenIdConnectEvents
+                    {
+                        // handle the logout redirection
+                        OnRedirectToIdentityProviderForSignOut = context =>
+                        {
+                            var logoutUri =
+                                $"https://{Configuration["AUTH_DOMAIN"]}/v2/logout?client_id={Configuration["AUTH_CLIENT_KEY"]}";
 
-          var postLogoutUri = context.Properties.RedirectUri;
-          if (!string.IsNullOrEmpty(postLogoutUri))
-          {
-            if (postLogoutUri.StartsWith("/"))
-            {
-              // transform to absolute
-              var request = context.Request;
-              postLogoutUri = $"{request.Scheme}://{request.Host}" + request.PathBase + postLogoutUri;
-            }
-            logoutUri += $"&returnTo={ Uri.EscapeDataString(postLogoutUri)}";
-          }
+                            var postLogoutUri = context.Properties.RedirectUri;
+                            if (!string.IsNullOrEmpty(postLogoutUri))
+                            {
+                                if (postLogoutUri.StartsWith("/"))
+                                {
+                                    // transform to absolute
+                                    var request = context.Request;
+                                    postLogoutUri = $"{request.Scheme}://{request.Host}" + request.PathBase +
+                                                    postLogoutUri;
+                                }
 
-          context.Response.Redirect(logoutUri);
-          context.HandleResponse();
+                                logoutUri += $"&returnTo={Uri.EscapeDataString(postLogoutUri)}";
+                            }
 
-          return Task.CompletedTask;
-        }
-    };
-  });
+                            context.Response.Redirect(logoutUri);
+                            context.HandleResponse();
+
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
 
 
-            services.AddSingleton<AwsS3Uploader>();
             services.AddTransient<ReportService>();
             services.AddTransient<AzureBlobUploader>();
         }

@@ -1,15 +1,11 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using BlazorStrap;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +31,7 @@ namespace Mona
             services.AddDbContext<ReportDataContext>(options => options.UseSqlite(Configuration["CONNECTION_STRING"]));
             services.AddRazorPages();
             services.AddServerSideBlazor();
+
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -104,6 +101,7 @@ namespace Mona
 
             services.AddSingleton<AwsS3Uploader>();
             services.AddTransient<ReportService>();
+            services.AddTransient<AzureBlobUploader>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -124,10 +122,9 @@ namespace Mona
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();
-            app.UseAuthorization();
 
             app.UseRouting();
-
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapBlazorHub();

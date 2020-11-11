@@ -11,10 +11,10 @@ namespace Mona.Data
 {
     public class ReportService
     {
-        private readonly AwsS3Uploader _uploader;
+        private readonly AzureBlobUploader _uploader;
         private readonly ReportDataContext _reportDataContext;
 
-        public ReportService(AwsS3Uploader uploader, ReportDataContext reportDataContext)
+        public ReportService(AzureBlobUploader uploader, ReportDataContext reportDataContext)
         {
             _uploader = uploader;
             _reportDataContext = reportDataContext;

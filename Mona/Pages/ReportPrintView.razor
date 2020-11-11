@@ -14,7 +14,13 @@
 }
 else
 {
-    <BSCard CardType="CardType.Columns">
+       <style type="text/css"> 
+        table {page-break-before: always;  
+               font-size: 100px;} 
+        tr{page-break-inside: avoid;  
+           page-break-after: auto;} 
+    </style> 
+    <BSCard CardType="CardType.Deck">
 
         @foreach (var reportLine in _reportLines)
         {

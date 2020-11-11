@@ -45,7 +45,7 @@ else
 }
 
 <BSModal @ref=_imageModal IsCentered="true" Size="Size.ExtraLarge">
-    <BSModalHeader OnClick="@OnToggleImageModal">Modal title</BSModalHeader>
+    <BSModalHeader OnClick="@OnToggleImageModal">Image details</BSModalHeader>
     <BSModalBody>
         <BSImage src=@_selectedImage alt="Related image" />
     </BSModalBody>
@@ -60,7 +60,6 @@ else
     public long ReportId { get; set; }
 
     public string EditFormClass { get; set; } = string.Empty;
-    private bool _showNewReportLine;
     private string _selectedImage;
     private BSModal _imageModal;
     private NewReportLine _editModal;

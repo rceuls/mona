@@ -11,10 +11,10 @@ namespace Mona.Migrations
                 name: "Reports",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ReportedBy = table.Column<string>(maxLength: 255, nullable: false),
-                    CreatedOn = table.Column<DateTimeOffset>(nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ReportedBy = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -25,14 +25,14 @@ namespace Mona.Migrations
                 name: "ReportLines",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ReportId = table.Column<long>(nullable: false),
-                    Description = table.Column<string>(maxLength: 4096, nullable: false),
-                    Location = table.Column<string>(maxLength: 1024, nullable: false),
-                    Responsible = table.Column<string>(maxLength: 1024, nullable: false),
-                    TargetDate = table.Column<DateTimeOffset>(nullable: false),
-                    ImageUrl = table.Column<string>(nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ReportId = table.Column<long>(type: "bigint", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", maxLength: 4096, nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false),
+                    Responsible = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false),
+                    TargetDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

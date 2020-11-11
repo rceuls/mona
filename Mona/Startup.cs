@@ -28,7 +28,7 @@ namespace Mona
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddBootstrapCss();
-            services.AddDbContext<ReportDataContext>(options => options.UseSqlite(Configuration["CONNECTION_STRING"]));
+            services.AddDbContext<ReportDataContext>(options => options.UseSqlServer(Configuration["CONNECTION_STRING"]));
             services.AddRazorPages();
             services.AddServerSideBlazor();
 

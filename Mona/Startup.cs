@@ -102,8 +102,8 @@ namespace Mona
                 });
 
 
-            services.AddTransient<ReportService>();
-            services.AddTransient<AzureBlobUploader>();
+            services.AddScoped<ReportService>();
+            services.AddScoped<AzureBlobUploader>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
